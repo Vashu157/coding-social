@@ -7,8 +7,7 @@ import { useState } from "react";
 import { formSchema } from "../schema/profileSchema";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import CodeIcon from '@mui/icons-material/Code';
-// import CodeforcesIcon from '@mui/icons-material/Codeforces';
-// import LeetcodeIcon from '@mui/icons-material/Leetcode';
+
 export default function SubmitForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -78,7 +77,7 @@ export default function SubmitForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-black-600 hover:bg-orange-700 text-black font-semibold py-2 px-4 rounded"
+          className="w-full bg-black hover:bg-orange-700 text-black font-semibold py-2 px-4 rounded"
         >
           {loading ? "Submitting..." : "Submit"}
         </button>
