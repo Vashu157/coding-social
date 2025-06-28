@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useFetchProfiles from "../hooks/fetchProfile.js";
-import UserCard from "../components/userCard";
+import UserCard from "../components/UserCard.jsx";
 
 const Home = () => {
   const { profiles, loading } = useFetchProfiles();
