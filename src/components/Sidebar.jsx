@@ -7,7 +7,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -18,7 +18,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-gray-800 text-white p-4 flex flex-col transition-all duration-300 ${
+      className={`h-screen bg-orange-600 rounded-r-2xl text-white p-4 flex flex-col transition-all duration-300 ${
         collapsed ? "w-23" : "w-64"
       }`}
     >

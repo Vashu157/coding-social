@@ -39,7 +39,7 @@ export default function SubmitForm() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl">
-      <h2 className="text-2xl font-bold mb-4 text-center">Submit Your Profile</h2>
+      <h2 className="text-2xl text-orange-600 font-bold mb-4 text-center">Submit Your Profile</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
@@ -78,7 +78,7 @@ export default function SubmitForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-black-600 hover:bg-gray-700 text-black font-semibold py-2 px-4 rounded"
+          className="w-full bg-black-600 hover:bg-orange-700 text-black font-semibold py-2 px-4 rounded"
         >
           {loading ? "Submitting..." : "Submit"}
         </button>
