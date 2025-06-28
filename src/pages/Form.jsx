@@ -43,36 +43,36 @@ export default function SubmitForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block">Name</label>
+          <label className="block text-black">Name</label>
           <input
             {...register("name")}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-black rounded"
           />
           {errors.name && <p className="text-red-500">{errors.name.message}</p>}
         </div>
 
         <div>
-          <label className="block">Email</label>
+          <label className="block text-black">Email</label>
           <input
             {...register("email")}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-black rounded"
           />
           {errors.email && <p className="text-red-500">{errors.email.message}</p>}
         </div>
 
         <div>
-          <label className="block">GitHub Username <GitHubIcon /></label>
-          <input {...register("github_username")} className="w-full p-2 border rounded" />
+          <label className="block text-black">GitHub Username <GitHubIcon /></label>
+          <input {...register("github_username")} className="w-full p-2 border border-black rounded" />
         </div>
 
         <div>
-          <label className="block">LeetCode Username </label>
-          <input {...register("leetcode_username")} className="w-full p-2 border rounded" />
+          <label className="block text-black">LeetCode Username </label>
+          <input {...register("leetcode_username")} className="w-full p-2 border border-black rounded" />
         </div>
 
         <div>
-          <label className="block">Codeforces Username <CodeIcon /> </label>
-          <input {...register("codeforces_username")} className="w-full p-2 border rounded" />
+          <label className="block text-black">Codeforces Username <CodeIcon /> </label>
+          <input {...register("codeforces_username")} className="w-full p-2 border border-black rounded" />
         </div>
 
 <button
