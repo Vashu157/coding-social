@@ -1,3 +1,4 @@
+import React from 'react';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -74,13 +75,13 @@ export default function SubmitForm() {
           <input {...register("codeforces_username")} className="w-full p-2 border rounded" />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black hover:bg-orange-700 text-black font-semibold py-2 px-4 rounded"
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
+<button
+  type="submit"
+  disabled={loading}
+  className="w-full bg-orange-600 text-black p-2 rounded hover:bg-[orange] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? "Submitting..." : "Submit"}
+</button>
 
         {success && <p className="text-green-600 text-center">Profile submitted successfully!</p>}
       </form>

@@ -26,7 +26,7 @@ const Sidebar = () => {
       {/* <div className="collapse"> */}
         <button
           onClick={toggleSidebar}
-          className="mb-6 focus:outline-none hover:bg-gray-700 p-2 rounded"
+          className="mb-6 bg-white focus:outline-none hover:bg-orange-500 p-2 rounded"
         >
           <MenuIcon className="text-gray-800"/>
         </button>
