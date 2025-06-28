@@ -3,8 +3,9 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import Form from './pages/Form';
-import About from './pages/about';
+
 import Dashboard from './pages/Dashboard';
+import About from './pages/About.jsx';
 
 
 export default function App() {
