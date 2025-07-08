@@ -18,6 +18,8 @@
     "@mui/material": "^7.1.2",
     "@supabase/supabase-js": "^2.50.2",
     "@tailwindcss/vite": "^4.1.11",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.58.1",
