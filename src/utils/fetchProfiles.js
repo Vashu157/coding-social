@@ -13,3 +13,16 @@ export const fetchProfiles = async () => {
 
   return data || [];
 };
+
+export const fetchLeetcodeProfile = async(username) =>{
+  const {data,error} = await supabase
+  .from('leetcode')
+  .select('*')
+  .eq("username", username);
+   if(error){
+    console.error("Error fetching leetcode profile:", error.message);
+    return [];
+  }
+  return data
+}
+

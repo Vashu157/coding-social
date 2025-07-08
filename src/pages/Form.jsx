@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,7 @@ import CodeIcon from "@mui/icons-material/Code";
 export default function SubmitForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
+  const [leetcodeData, setLeetcodeData] = useState(null);
   const {
     register,
     handleSubmit,
@@ -23,6 +23,13 @@ export default function SubmitForm() {
   });
 
   const onSubmit = async (data) => {
+    const leet_response = await fetch(
+      `http://localhost:3000/api/leetcode/${data.leetcode_username}`
+    );
+    const leetcodeData = await leet_response.json();
+    setLeetcodeData(leetcodeData);
+    console.log(leetcodeData);
+    const { error: leeterror } = await supabase.from("leetcode").insert([leetcodeData]);
     setLoading(true);
     const { error } = await supabase.from("profiles").insert([data]);
 
@@ -31,7 +38,7 @@ export default function SubmitForm() {
     } else {
       setSuccess(true);
       reset();
-      setTimeout(() => setSuccess(false), 3000); // Reset success after 3 sec
+      setTimeout(() => setSuccess(false), 3000); // Reset success after 3 seconds
     }
 
     setLoading(false);
