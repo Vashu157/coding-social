@@ -13,6 +13,7 @@ export default function SubmitForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [leetcodeData, setLeetcodeData] = useState(null);
+  const [githubData, setGithubData] = useState(null);
   const {
     register,
     handleSubmit,
@@ -24,12 +25,37 @@ export default function SubmitForm() {
 
   const onSubmit = async (data) => {
     const leet_response = await fetch(
+      //====================================================
       `http://localhost:3000/api/leetcode/${data.leetcode_username}`
     );
     const leetcodeData = await leet_response.json();
     setLeetcodeData(leetcodeData);
     console.log(leetcodeData);
-    const { error: leeterror } = await supabase.from("leetcode").insert([leetcodeData]);
+    const { error: leeterror } = await supabase
+      .from("leetcode")
+      .insert([leetcodeData]);
+//=======================================================================================
+    const git_response = await fetch(
+      `http://localhost:3000/api/github/${data.github_username}`
+    );
+
+    if (!git_response.ok) {
+      throw new Error("Failed to fetch GitHub data");
+    }
+
+    const githubData = await git_response.json();
+    setGithubData(githubData);
+    console.log(githubData);
+
+    // Insert into Supabase
+    const { error: giterror } = await supabase
+      .from("github")
+      .insert([githubData]);
+
+    if (giterror) {
+      console.error("Supabase insert error:", giterror.message);
+    }
+//========================================================
     setLoading(true);
     const { error } = await supabase.from("profiles").insert([data]);
 

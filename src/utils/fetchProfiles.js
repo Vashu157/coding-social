@@ -26,3 +26,14 @@ export const fetchLeetcodeProfile = async(username) =>{
   return data
 }
 
+export const fetchGithubProfile = async(username) =>{
+  const{data,error} = await supabase
+  .from('github')
+  .select('*')
+  .eq("username", username);
+   if(error){
+    console.error("Error fetching github profile:", error.message);
+    return [];
+  }
+  return data
+}

@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import fetchLeetcode from "./profileFetch.js";
+import { fetchGithub } from "./profileFetch.js";
 
 const app = express();
 
@@ -16,8 +17,15 @@ app.get("/api/leetcode/:username", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch LeetCode data" });
   }
 });
-
-
+app.get("/api/github/:username", async (req, res) => {
+  const { username } = req.params;
+  try{
+    const data = await fetchGithub(username);
+    res.send(data);
+  }catch(err){
+    res.status(500).json({ error: "Failed to fetch GitHub data" });
+  }
+})
 app.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
 });

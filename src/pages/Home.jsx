@@ -3,27 +3,35 @@ import React, { useState } from "react";
 import useFetchProfiles from "../hooks/fetchProfile.js";
 import UserCard from "../components/UserCard.jsx";
 import { fetchLeetcodeProfile } from "../utils/fetchProfiles";
-
+import { fetchGithubProfile } from "../utils/fetchProfiles.js";
 const Home = () => {
   const { profiles, loading } = useFetchProfiles();
   const [search, setSearch] = useState("");
 
-  const [hoveredData, setHoveredData] = useState(null);
+  const [hoveredDataLeet, setHoveredDataLeet] = useState(null);
   const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
+  const [hoveredDataGit, setHoveredDataGit] = useState(null);
 
   const handleLeetHover = async (username, position) => {
     const data = await fetchLeetcodeProfile(username);
-    setHoveredData({ ...data[0], username ,});
+    setHoveredDataLeet({ ...data[0], username });
     setDialogPosition(position);
   };
-
-  const handleLeetLeave = () => {
-    setHoveredData(null);
+  const handleGitHover = async (username, position) => {
+    const data = await fetchGithubProfile(username);
+    setHoveredDataGit({ ...data[0], username });
+    setDialogPosition(position);
   };
-
-  const filteredProfiles = profiles.filter((user) =>
-    user.name?.toLowerCase().includes(search.toLowerCase()) ||
-    user.email?.toLowerCase().includes(search.toLowerCase())
+  const handleLeetLeave = () => {
+    setHoveredDataLeet(null);
+  };
+  const handleGitLeave = () => {
+    setHoveredDataGit(null);
+  };
+  const filteredProfiles = profiles.filter(
+    (user) =>
+      user.name?.toLowerCase().includes(search.toLowerCase()) ||
+      user.email?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -37,6 +45,9 @@ const Home = () => {
           className="w-full px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#192732]"
         />
       </div>
+      <p className="text-gray-400">
+        you may hover the links to view git and leetcode profiles
+      </p>
       {loading ? (
         <p>Loading...</p>
       ) : filteredProfiles.length === 0 ? (
@@ -49,33 +60,78 @@ const Home = () => {
               user={user}
               onLeetHover={handleLeetHover}
               onLeetLeave={handleLeetLeave}
+              onGitHover={handleGitHover}
+              onGitLeave={handleGitLeave}
             />
           ))}
         </div>
       )}
 
-      {hoveredData && (
+      {hoveredDataLeet && (
         <div
           className="absolute z-50 bg-white text-black p-3 rounded-lg shadow-xl"
-          style={{ top: dialogPosition.top, left: dialogPosition.left ,width: "320px",height: "190px",padding: "16px"
-      }}
+          style={{
+            top: dialogPosition.top,
+            left: dialogPosition.left,
+            width: "320px",
+            height: "190px",
+            padding: "16px",
+          }}
         >
           <div className="flex items-center gap-2 mb-2">
             <img
-              src={hoveredData.avatar}
+              src={hoveredDataLeet.avatar}
               alt="avatar"
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <p className="font-semibold">{hoveredData.realName}</p>
-              <p className="text-sm text-gray-600">Ranking: {hoveredData.ranking}</p>
+              <p className="font-semibold">{hoveredDataLeet.realName}</p>
+              <p className="text-sm text-gray-600">
+                Ranking: {hoveredDataLeet.ranking}
+              </p>
             </div>
           </div>
           <div className="text-sm">
-            <p>★ {hoveredData.starRating}</p>
-            <p>Total Solved: {hoveredData.totalSolved}</p>
+            <p>★ {hoveredDataLeet.starRating}</p>
+            <p>Total Solved: {hoveredDataLeet.totalSolved}</p>
             <p>
-              Easy: {hoveredData.easySolved} | Medium: {hoveredData.mediumSolved} | Hard: {hoveredData.hardSolved}
+              Easy: {hoveredDataLeet.easySolved} | Medium:{" "}
+              {hoveredDataLeet.mediumSolved} | Hard:{" "}
+              {hoveredDataLeet.hardSolved}
+            </p>
+          </div>
+        </div>
+      )}
+      {hoveredDataGit && (
+        <div
+          className="absolute z-50 bg-white text-black p-3 rounded-lg shadow-xl"
+          style={{
+            top: dialogPosition.top,
+            left: dialogPosition.left,
+            width: "320px",
+            height: "190px",
+            padding: "16px",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <img
+              src={hoveredDataGit.avatar}
+              alt="avatar"
+              className="w-10 h-10 rounded-full"
+            />
+            <div>
+              <p className="font-semibold">
+                {hoveredDataGit.name || hoveredDataGit.username}
+              </p>
+              <p className="text-sm text-gray-600">
+                Repos: {hoveredDataGit.publicRepos}
+              </p>
+            </div>
+          </div>
+          <div className="text-sm">
+            <p>👤 {hoveredDataGit.bio || "No bio provided."}</p>
+            <p>
+              📅 Joined: {new Date(hoveredDataGit.createdAt).toDateString()}
             </p>
           </div>
         </div>

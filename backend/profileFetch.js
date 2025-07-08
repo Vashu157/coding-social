@@ -23,23 +23,30 @@ const fetchLeetcode = async (username) => {
       easySolved: stats.find(x => x.difficulty === "Easy")?.count || 0,
       mediumSolved: stats.find(x => x.difficulty === "Medium")?.count || 0,
       hardSolved: stats.find(x => x.difficulty === "Hard")?.count || 0,
-    //   recentSubmissions: recentRaw.slice(0, 3).map(sub => ({
-    //     title: sub.title,
-    //     status: sub.statusDisplay,
-    //     lang: sub.lang
-    //   })),
-    //   activeBadge: activeBadge
-    //     ? {
-    //         name: activeBadge.displayName,
-    //         icon: activeBadge.icon
-    //       }
-    //     : null
-    // };
 }
   } catch (err) {
     console.error("Error fetching LeetCode data:", err.message);
     throw err;
   }
 };
+export const fetchGithub = async (username) => {
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    const data = await response.json();
+
+    return {
+      username: data.login,
+      avatar: data.avatar_url,
+      publicRepos: data.public_repos,
+      createdAt: data.created_at,
+      name: data.name,
+      bio: data.bio,
+    };
+  } catch (err) {
+    console.error("Error fetching GitHub data:", err.message);
+    throw err;
+  }
+};
+
 
 export default fetchLeetcode;
