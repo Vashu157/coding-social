@@ -26,7 +26,7 @@ export default function SubmitForm() {
   const onSubmit = async (data) => {
     const leet_response = await fetch(
       //====================================================
-      `http://localhost:3000/api/leetcode/${data.leetcode_username}`
+      `https://coding-social.onrender.com/api/leetcode/${data.leetcode_username}`
     );
     const leetcodeData = await leet_response.json();
     setLeetcodeData(leetcodeData);
@@ -36,7 +36,7 @@ export default function SubmitForm() {
       .insert([leetcodeData]);
 //=======================================================================================
     const git_response = await fetch(
-      `http://localhost:3000/api/github/${data.github_username}`
+      `https://coding-social.onrender.com/api/github/${data.github_username}`
     );
 
     if (!git_response.ok) {
