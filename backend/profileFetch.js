@@ -3,7 +3,7 @@ const leetcode = new LeetCode();
 
 const fetchLeetcode = async (username) => {
   try {
-    const data = await leetcode.user(username);
+    
 
     const profile = data?.matchedUser?.profile || {};
     const stats = data?.matchedUser?.submitStats?.acSubmissionNum || [];
