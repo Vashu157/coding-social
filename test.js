@@ -1,39 +1,35 @@
-const fs = require('fs');
-const { exec } = require('child_process');
+const crypto = require('crypto');
 
-// 1. THE STATIC TRAP: Hardcoded Secret
-// Your JS AST engine should flag this as a critical security vulnerability.
-const AWS_SECRET_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLE123";
+// 1. THE STATIC TRAP: Hardcoded Database Credentials
+// Your AST engine should flag this MongoDB URI as a critical data exposure.
+const MONGO_PROD_URI = "mongodb+srv://admin:SuperSecretPassword123@cluster0.mongodb.net/prod";
 
-async function processUserOrder(orderId, totalAmount) {
-    // 2. THE MOCKING TRAP: Environment Variable Read
-    // Your AST environment mocker must catch process.env reads, 
-    const paymentGatewayToken = process.env.PAYMENT_GATEWAY_TOKEN;
+async function executeDatabaseQuery(queryId, rawInput) {
+    // 2. THE MOCKING TRAP: Environment Variable
+    // Sandbox should mock this so the container doesn't crash on boot.
+    const masterKey = process.env.ENCRYPTION_MASTER_KEY;
 
-    // 3. THE SECURITY TRAP: Command Injection Risk
-    // Your static engine should flag 'child_process.exec' as forbidden.
-    // Untrusted input (orderId) is being passed directly to the shell!
-    exec(`echo "Processing transaction for order: ${orderId}"`, (err, stdout, stderr) => {
-        if (err) console.error("Failed to log transaction.");
-    });
+    // 3. THE SECURITY TRAP: Arbitrary Code Execution
+    // Tree-sitter should flag eval() as an absolute forbidden function.
+    eval(`console.log("Processing query: " + ${rawInput})`);
 
     // 4. THE DYNAMIC TRAP: AI Hallucination (Crash)
-    // When your Docker sandbox runs the generated harness for this function, 
-    // Node.js will instantly crash with a 'ReferenceError'.
-    const signatureValid = await verifyStripeSignature(orderId, paymentGatewayToken);
+    // 'sanitizeInput' is never defined! 
+    // The Node.js sandbox will crash with a ReferenceError here.
+    const sanitizedInput = await sanitizeInput(rawInput, masterKey);
 
-    if (signatureValid) {
-        console.log(`Order ${orderId} processed for $${totalAmount}`);
-        return { success: true, amount: totalAmount };
+    if (sanitizedInput) {
+        console.log(`Query ${queryId} executed successfully.`);
+        return { status: "success", id: queryId };
     }
 
-    return { success: false, reason: "Invalid Signature" };
+    return { status: "failed" };
 }
 
-function fetchGlobalSettings() {
+function calculateHash() {
     // 5. ANOTHER DYNAMIC TRAP: Undefined Object
-    // Will throw a ReferenceError because 'configManager' does not exist.
-    return configManager.initialize();
+    // Will throw a ReferenceError for 'hashProvider'.
+    return hashProvider.generate();
 }
 
-module.exports = { processUserOrder, fetchGlobalSettings };
+module.exports = { executeDatabaseQuery, calculateHash };
