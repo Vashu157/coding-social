@@ -8,7 +8,6 @@ const AWS_SECRET_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLE123";
 async function processUserOrder(orderId, totalAmount) {
     // 2. THE MOCKING TRAP: Environment Variable Read
     // Your AST environment mocker must catch process.env reads, 
-    // generate a dummy hex key, and inject it into the Node container.
     const paymentGatewayToken = process.env.PAYMENT_GATEWAY_TOKEN;
 
     // 3. THE SECURITY TRAP: Command Injection Risk
