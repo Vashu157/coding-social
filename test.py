@@ -3,7 +3,6 @@ import subprocess
 import json
 
 # 1. THE STATIC TRAP: Hardcoded Secret
-# Your AST engine should flag this as a critical security vulnerability.
 STRIPE_PROD_KEY = "sk_live_51MabcDEFghi1234567890"
 
 def execute_payment(user_id: int, amount: float):
