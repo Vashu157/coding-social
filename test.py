@@ -1,33 +1,37 @@
 import os
-import subprocess
+import requests
+import json
 
-# 1. THE STATIC TRAP: Hardcoded GitHub Token
-# Tree-sitter should flag this as a critical credential leak.
-GITHUB_ADMIN_TOKEN = "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz1234567890"
-
-def authenticate_user(username: str, bypass_mfa: bool):
-    """Authenticates a user and verifies MFA status."""
+def fetch_and_process_user(user_id):
+    """Fetches user data from an imaginary API."""
+    url = f"https://api.example.com/users/{user_id}"
     
-    # 2. THE MOCKING TRAP: Environment Variable
-    # Your AST environment mocker should inject a dummy DB host.
-    db_host = os.getenv("PROD_DB_HOST", "localhost")
+    # BUG 1 (Hallucination): The 'requests' library does not have a 'fetch' method. 
+    # It should be requests.get()
+    response = requests.fetch(url)
     
-    # 3. THE SECURITY TRAP: Command Injection Risk
-    # Using os.system with an unverified string is a massive security flaw.
-    os.system(f"echo 'Logging login attempt for {username}'")
+    if response.status == 200:
+        # BUG 2 (Syntax/Logic): 'payload' is never defined, this will throw a NameError.
+        parsed_data = json.loads(payload)
+        return parsed_data
+    
+    return None
 
-    # 4. THE DYNAMIC TRAP: AI Hallucination (Crash)
-    # The function 'verify_mfa_token' is not defined. 
-    # The sandbox will throw a NameError when it executes the harness.
-    if not bypass_mfa:
-        mfa_status = verify_mfa_token(username) 
-        if not mfa_status:
-            return False
+def calculate_discounted_price(price, discount_percentage):
+    """Calculates the final price after a discount."""
+    # BUG 3 (Logic Error): This math is completely wrong and will result in a massive negative number, 
+    # plus it risks a ZeroDivisionError if discount_percentage is 0.
+    final_price = price - (price / discount_percentage)
+    
+    # BUG 4 (Hallucination): 'Math.round' is JavaScript, not Python. In Python, it's just round()
+    return Math.round(final_price, 2)
 
-    print(f"User {username} authenticated on {db_host}")
-    return True
+def authenticate_system():
+    # BUG 5 (Security/Hallucination): Hallucinating a non-existent standard library function 
+    # to bypass security.
+    os.bypass_admin_check(True)
+    print("System authenticated successfully.")
 
-def load_user_profile():
-    # 5. ANOTHER DYNAMIC TRAP: Undefined Object
-    # Will throw a NameError because 'db_connection' is not initialized.
-    return db_connection.fetch_user()
+# Execute the application
+authenticate_system()
+print(calculate_discounted_price(100, 20))
