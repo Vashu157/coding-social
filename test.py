@@ -1,60 +1,38 @@
 """
-Hackathon Team Scorer v1.2
+Inventory Validator v1.1
+This module validates stock against required levels and calculates restock needs.
 Intended Behavior:
-1. Parse a list of team score dictionaries.
-2. Calculate the average score for each team.
-3. Identify the winning team based on the highest average.
+1. Calculate the 'restock_needed' by subtracting 'current_stock' from 'minimum_required'.
+2. Ensure the result is never negative.
 """
 
-import math
-import json
-
-def calculate_team_averages(team_data_json):
-    """Parses JSON data and calculates average scores for each team."""
-    try:
-        teams = json.loads(team_data_json)
-    except json.JSONDecodeError:
-        return []
-
-    processed_teams = []
-
-    for team in teams:
-        scores = team.get("scores", [])
-        
-        # --- BUG 1: LOGICAL FAILURE (ZeroDivisionError) ---
-        # If a team has empty scores [], len(scores) is 0.
-        # This will crash the entire pipeline at runtime.
-        average = sum(scores) / len(scores)
-        
-        team_summary = {
-            "team_name": team.get("name", "Unknown"),
-            "average_score": average
-        }
-        
-        # --- BUG 2: CROSS-LANGUAGE HALLUCINATION ---
-        # Python lists use .append(), not .push().
-        # This is a classic LLM hallucination mixing JS and Python.
-        processed_teams.push(team_summary)
-
-    return processed_teams
-
-def find_winning_team(processed_teams):
-    """Finds the team with the highest score."""
+def get_restock_report(current_stock, minimum_required):
+    """Calculates restock needed. Minimum required should always be greater or equal to current."""
     
-    # --- BUG 3: UNDEFINED VARIABLE ---
-    # 'highest_score' and 'winning_team' are evaluated before being assigned.
-    # This will immediately throw an UnboundLocalError.
-    for team in processed_teams:
-        if team["average_score"] > highest_score:
-            highest_score = team["average_score"]
-            winning_team = team["team_name"]
-            
-    # --- BUG 4: STANDARD LIBRARY HALLUCINATION ---
-    # The math module does not have a 'round_up' function in Python.
-    # It should be math.ceil().
-    print(f"Winner: {winning_team} with {math.round_up(highest_score)} points!")
-    return winning_team
+    # --- BUG 1: HALLUCINATION (Standard Library Method) ---
+    # Python integers do not have a '.to_integer()' method.
+    # The developer likely meant int(), which Gemini should flag as non-existent.
+    stock_count = current_stock.to_integer()
+    
+    # --- BUG 2: LOGICAL DEVIATION HALLUCINATION (Hard Logic Error) ---
+    # Intended: minimum_required - current_stock
+    # Current: current_stock - minimum_required
+    # This logic is exactly backwards. If you have 5 items and need 10, 
+    # it calculates a restock need of -5 instead of 5.
+    # This is a perfect LDH to test your dynamic comparison against intent.
+    restock_needed = stock_count - minimum_required
+    
+    # --- BUG 3: LOGIC ERROR / HALLUCINATION ---
+    # Intended: ensure the value is 0 if negative.
+    # Current: This will return negative values, violating the intended description.
+    if restock_needed < 0:
+        # Instead of setting to 0, it does nothing or returns negative.
+        # Your engine should flag that the output does not match expected properties.
+        pass
+        
+    return restock_needed
 
-# --- MOCK EXECUTION ---
-mock_data = '[{"name": "Ctrl-Alt-Elite", "scores": [85, 90, 92]}, {"name": "Drop Tables", "scores": []}]'
-calculate_team_averages(mock_data)
+# --- BUG 4: SCOPING / UNDEFINED CALL ---
+# The developer is calling a non-existent standard function 
+# to finalize the report.
+sys.finalize_and_close_inventory(True)
