@@ -1,64 +1,57 @@
 """
-Ecommerce Processor v1.0
-This module processes customer data and calculates loyalty points.
+Auth Manager v2.1
 Intended Behavior:
-1. Load a list of customer JSON strings.
-2. Validate the data.
-3. Calculate loyalty bonus based on past purchases (1 point per 10 currency spent).
+1. Validate user session tokens.
+2. Generate expiration dates for new tokens (24-hour validity).
+3. Authenticate admin users based on role arrays.
 """
 
-import json
-import random
+import datetime
+import hashlib
 
-def process_customers(raw_customer_list):
-    """Processes a list of raw customer JSON strings."""
-    processed_list = []
+def generate_token_expiration():
+    """Generates an expiration timestamp 24 hours from now."""
+    current_time = datetime.datetime.now()
     
-    # --- BUG 1: SYNTAX ERROR / HALLUCINATION ---
-    # Python dictionaries do not have an '.append_all()' method.
-    # The intended library method was '.update()', which Gemini should catch.
-    default_config = {"loyalty_multiplier": 1.0, "region": "Global"}
+    # --- BUG 1: HALLUCINATION (Standard Library) ---
+    # Python's datetime does not have an '.add_days()' method.
+    # The correct implementation requires the 'datetime.timedelta(days=1)' object.
+    # This will crash immediately (Logical Failure).
+    expiration = current_time.add_days(1)
     
-    for customer_json in raw_customer_list:
-        try:
-            customer_data = json.loads(customer_json)
-            
-            # This line will cause the script to crash (Logical Failure Hallucination).
-            # It should trigger your runtime detection.
-            customer_data.append_all(default_config)
-            
-            processed_list.append(customer_data)
-        except json.JSONDecodeError:
-            print("Skipping malformed customer JSON.")
-            
-    return processed_list
+    return expiration.isoformat()
 
-class LoyaltyCalculator:
-    def __init__(self, multiplier=1.0):
-        self.multiplier = multiplier
-
-    def calculate_bonus(self, total_spent):
-        """Intended: Calculates bonus as total_spent / 10 * multiplier."""
+def verify_admin_access(user_roles):
+    """Checks if 'admin' is in the user's role array."""
+    
+    # --- BUG 2: CROSS-LANGUAGE HALLUCINATION ---
+    # Python uses len(user_roles), not the JavaScript '.length' property.
+    # Gemini's static engine should easily catch this syntax hallucination.
+    if user_roles.length == 0:
+        return False
         
-        # --- BUG 2: LOGICAL FAILURE HALLUCINATION (Runtime) ---
-        # If total_spent is 0 (which is a valid state), this function will 
-        # crash due to a ZeroDivisionError during execution.
-        # This is a classic LFH your dynamic module should catch.
-        bonus = (self.multiplier / 10) * (total_spent)
-        return bonus
+    for role in user_roles:
+        if role == "admin":
+            return True
+            
+    # --- BUG 3: UNDEFINED VARIABLE ---
+    # 'default_fallback' is never declared, leading to a NameError.
+    return default_fallback
 
-    def generate_report(self, loyalty_bonus):
-        """Generates a summary report of the bonus."""
-        # --- BUG 3: UNDEFINED VARIABLE HALLUCINATION ---
-        # 'bonus_summary' is never defined in this scope. 
-        # Python will throw a NameError, which Gemini will flag statically.
-        summary_text = f"Total Loyalty Bonus Allocated: {bonus_summary}"
-        print(summary_text)
+def authenticate_password(input_password, stored_hash):
+    """Verifies a plaintext password against a stored hash."""
+    hashed_input = hashlib.sha256(input_password.encode()).hexdigest()
+    
+    # --- BUG 4: LOGICAL DEVIATION (Security Flaw) ---
+    # Intended: return hashed_input == stored_hash
+    # Current: using 'is' checks for object identity in memory, not value equality.
+    # This will almost always return False even if the passwords match, 
+    # locking everyone out of the system.
+    if hashed_input is stored_hash:
+        return True
+    
+    return False
 
-# --- EXECUTION ---
-# This simulates how the code might run during testing.
-
-# Invalid total_spent (0) to trigger BUG 2
-calc = LoyaltyCalculator()
-points = calc.calculate_bonus(0)
-print(f"Bonus Points: {points}")
+# Execution for testing
+sample_roles = ["user", "editor"]
+print(verify_admin_access(sample_roles))

@@ -1,57 +1,59 @@
 /**
- * Payment Processor v2.0
+ * Trip Data Fetcher v1.0
  * Intended Behavior:
- * 1. Calculate final price after tax and discount.
- * 2. Process an array of transaction objects.
- * 3. Return a summary of processed transactions.
+ * 1. Fetch trip data from a mock API endpoint asynchronously.
+ * 2. Parse the JSON response.
+ * 3. Filter the trips to only return active ones.
  */
 
-function calculateFinalPrice(basePrice, taxRate, discount) {
-    // --- BUG 1: LOGICAL DEVIATION (Type Coercion Error) ---
-    // If basePrice is passed as a string (e.g., "100") from a JSON payload, 
-    // basePrice + taxAmount will result in string concatenation, not addition.
-    // E.g., "100" + 20 becomes "10020". This will completely break the math.
-    let taxAmount = basePrice * taxRate;
-    let finalPrice = basePrice + taxAmount - discount;
+async function fetchTripData(driverId) {
+    const endpoint = `https://api.mockrides.com/v1/drivers/${driverId}/trips`;
     
-    // --- BUG 2: HALLUCINATION (Standard Library) ---
-    // Math.roundTo() does not exist in JavaScript. 
-    // The developer meant Math.round() or finalPrice.toFixed(2).
-    // Your Gemini static analyzer will flag this immediately.
-    return Math.roundTo(finalPrice, 2);
+    // --- BUG 1: ASYNC LOGIC FAILURE (Logical Deviation) ---
+    // The developer forgot the 'await' keyword before fetch().
+    // 'response' will be a pending Promise, not the actual HTTP response object.
+    // The subsequent .json() call will throw an error.
+    let response = fetch(endpoint);
+    
+    if (response.status === 200) {
+        // --- BUG 2: HALLUCINATION (Standard Library) ---
+        // JSON.parseString() is not a valid JavaScript method. 
+        // It should just be JSON.parse() or response.json().
+        let rawData = JSON.parseString(response.body);
+        return rawData;
+    }
+    
+    return null;
 }
 
-function processTransactions(transactions) {
-    let successfulTransactions = [];
+function getActiveTrips(tripList) {
+    let activeTrips = [];
     
-    for (let i = 0; i < transactions.length; i++) {
-        let tx = transactions[i];
+    // --- BUG 3: HALLUCINATION (Dictionary/Object Methods) ---
+    // JavaScript uses Object.keys(tripList), not tripList.keys().
+    // This is a very common LLM hallucination where it assumes Python dictionary 
+    // methods apply to JS objects.
+    let keys = tripList.keys();
+    
+    for (let i = 0; i < keys.length; i++) {
+        let trip = tripList[keys[i]];
         
-        if (tx.status === "PENDING") {
-            // --- BUG 3: HALLUCINATION (Array Method) ---
-            // JavaScript arrays use .push(), NOT .append(). 
-            // This is a classic AI hallucination mixing up Python and JS syntax.
-            // This will throw a TypeError at runtime (Logical Failure).
-            successfulTransactions.append(tx.id);
+        // --- BUG 4: LOGICAL DEVIATION (Assignment vs. Comparison) ---
+        // Using a single '=' assigns the value "active" to trip.status, 
+        // which resolves to true. This will incorrectly return EVERY trip as active,
+        // completely destroying the filter logic.
+        if (trip.status = "active") {
+            activeTrips.push(trip);
         }
     }
     
-    // --- BUG 4: UNDEFINED VARIABLE ---
-    // 'summaryReport' was never declared or defined in this scope.
-    // This will throw a ReferenceError when the function returns.
-    return {
-        processedCount: successfulTransactions.length,
-        report: summaryReport
-    };
+    return activeTrips;
 }
 
-// --- EXECUTION / MOCK DATA ---
-const sampleTransactions = [
-    { id: 1, amount: 100, status: "PENDING" },
-    { id: 2, amount: 250, status: "COMPLETED" }
-];
+// Execution for testing
+const mockTrips = {
+    "trip1": { status: "completed", fare: 15 },
+    "trip2": { status: "active", fare: 20 }
+};
 
-// --- BUG 5: HALLUCINATION (Global Object) ---
-// Hallucinating a non-existent standard 'System' object to execute code.
-System.log(processTransactions(sampleTransactions));
-console.log(calculateFinalPrice("100", 0.20, 10));
+console.log(getActiveTrips(mockTrips));
