@@ -1,37 +1,64 @@
-import os
-import requests
+"""
+Ecommerce Processor v1.0
+This module processes customer data and calculates loyalty points.
+Intended Behavior:
+1. Load a list of customer JSON strings.
+2. Validate the data.
+3. Calculate loyalty bonus based on past purchases (1 point per 10 currency spent).
+"""
+
 import json
+import random
 
-def fetch_and_process_user(user_id):
-    """Fetches user data from an imaginary API."""
-    url = f"https://api.example.com/users/{user_id}"
+def process_customers(raw_customer_list):
+    """Processes a list of raw customer JSON strings."""
+    processed_list = []
     
-    # BUG 1 (Hallucination): The 'requests' library does not have a 'fetch' method. 
-    # It should be requests.get()
-    response = requests.fetch(url)
+    # --- BUG 1: SYNTAX ERROR / HALLUCINATION ---
+    # Python dictionaries do not have an '.append_all()' method.
+    # The intended library method was '.update()', which Gemini should catch.
+    default_config = {"loyalty_multiplier": 1.0, "region": "Global"}
     
-    if response.status == 200:
-        # BUG 2 (Syntax/Logic): 'payload' is never defined, this will throw a NameError.
-        parsed_data = json.loads(payload)
-        return parsed_data
-    
-    return None
+    for customer_json in raw_customer_list:
+        try:
+            customer_data = json.loads(customer_json)
+            
+            # This line will cause the script to crash (Logical Failure Hallucination).
+            # It should trigger your runtime detection.
+            customer_data.append_all(default_config)
+            
+            processed_list.append(customer_data)
+        except json.JSONDecodeError:
+            print("Skipping malformed customer JSON.")
+            
+    return processed_list
 
-def calculate_discounted_price(price, discount_percentage):
-    """Calculates the final price after a discount."""
-    # BUG 3 (Logic Error): This math is completely wrong and will result in a massive negative number, 
-    # plus it risks a ZeroDivisionError if discount_percentage is 0.
-    final_price = price - (price / discount_percentage)
-    
-    # BUG 4 (Hallucination): 'Math.round' is JavaScript, not Python. In Python, it's just round()
-    return Math.round(final_price, 2)
+class LoyaltyCalculator:
+    def __init__(self, multiplier=1.0):
+        self.multiplier = multiplier
 
-def authenticate_system():
-    # BUG 5 (Security/Hallucination): Hallucinating a non-existent standard library function 
-    # to bypass security.
-    os.bypass_admin_check(True)
-    print("System authenticated successfully.")
+    def calculate_bonus(self, total_spent):
+        """Intended: Calculates bonus as total_spent / 10 * multiplier."""
+        
+        # --- BUG 2: LOGICAL FAILURE HALLUCINATION (Runtime) ---
+        # If total_spent is 0 (which is a valid state), this function will 
+        # crash due to a ZeroDivisionError during execution.
+        # This is a classic LFH your dynamic module should catch.
+        bonus = (self.multiplier / 10) * (total_spent)
+        return bonus
 
-# Execute the application
-authenticate_system()
-print(calculate_discounted_price(100, 20))
+    def generate_report(self, loyalty_bonus):
+        """Generates a summary report of the bonus."""
+        # --- BUG 3: UNDEFINED VARIABLE HALLUCINATION ---
+        # 'bonus_summary' is never defined in this scope. 
+        # Python will throw a NameError, which Gemini will flag statically.
+        summary_text = f"Total Loyalty Bonus Allocated: {bonus_summary}"
+        print(summary_text)
+
+# --- EXECUTION ---
+# This simulates how the code might run during testing.
+
+# Invalid total_spent (0) to trigger BUG 2
+calc = LoyaltyCalculator()
+points = calc.calculate_bonus(0)
+print(f"Bonus Points: {points}")

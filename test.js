@@ -1,35 +1,57 @@
-const crypto = require('crypto');
+/**
+ * Payment Processor v2.0
+ * Intended Behavior:
+ * 1. Calculate final price after tax and discount.
+ * 2. Process an array of transaction objects.
+ * 3. Return a summary of processed transactions.
+ */
 
-// 1. THE STATIC TRAP: Hardcoded Database Credentials
-// Your AST engine should flag this MongoDB URI as a critical data exposure.
-const MONGO_PROD_URI = "mongodb+srv://admin:SuperSecretPassword123@cluster0.mongodb.net/prod";
+function calculateFinalPrice(basePrice, taxRate, discount) {
+    // --- BUG 1: LOGICAL DEVIATION (Type Coercion Error) ---
+    // If basePrice is passed as a string (e.g., "100") from a JSON payload, 
+    // basePrice + taxAmount will result in string concatenation, not addition.
+    // E.g., "100" + 20 becomes "10020". This will completely break the math.
+    let taxAmount = basePrice * taxRate;
+    let finalPrice = basePrice + taxAmount - discount;
+    
+    // --- BUG 2: HALLUCINATION (Standard Library) ---
+    // Math.roundTo() does not exist in JavaScript. 
+    // The developer meant Math.round() or finalPrice.toFixed(2).
+    // Your Gemini static analyzer will flag this immediately.
+    return Math.roundTo(finalPrice, 2);
+}
 
-async function executeDatabaseQuery(queryId, rawInput) {
-    // 2. THE MOCKING TRAP: Environment Variable
-    // Sandbox should mock this so the container doesn't crash on boot.
-    const masterKey = process.env.ENCRYPTION_MASTER_KEY;
-
-    // 3. THE SECURITY TRAP: Arbitrary Code Execution
-    // Tree-sitter should flag eval() as an absolute forbidden function.
-    eval(`console.log("Processing query: " + ${rawInput})`);
-
-    // 4. THE DYNAMIC TRAP: AI Hallucination (Crash)
-    // 'sanitizeInput' is never defined! 
-    // The Node.js sandbox will crash with a ReferenceError here.
-    const sanitizedInput = await sanitizeInput(rawInput, masterKey);
-
-    if (sanitizedInput) {
-        console.log(`Query ${queryId} executed successfully.`);
-        return { status: "success", id: queryId };
+function processTransactions(transactions) {
+    let successfulTransactions = [];
+    
+    for (let i = 0; i < transactions.length; i++) {
+        let tx = transactions[i];
+        
+        if (tx.status === "PENDING") {
+            // --- BUG 3: HALLUCINATION (Array Method) ---
+            // JavaScript arrays use .push(), NOT .append(). 
+            // This is a classic AI hallucination mixing up Python and JS syntax.
+            // This will throw a TypeError at runtime (Logical Failure).
+            successfulTransactions.append(tx.id);
+        }
     }
-
-    return { status: "failed" };
+    
+    // --- BUG 4: UNDEFINED VARIABLE ---
+    // 'summaryReport' was never declared or defined in this scope.
+    // This will throw a ReferenceError when the function returns.
+    return {
+        processedCount: successfulTransactions.length,
+        report: summaryReport
+    };
 }
 
-function calculateHash() {
-    // 5. ANOTHER DYNAMIC TRAP: Undefined Object
-    // Will throw a ReferenceError for 'hashProvider'.
-    return hashProvider.generate();
-}
+// --- EXECUTION / MOCK DATA ---
+const sampleTransactions = [
+    { id: 1, amount: 100, status: "PENDING" },
+    { id: 2, amount: 250, status: "COMPLETED" }
+];
 
-module.exports = { executeDatabaseQuery, calculateHash };
+// --- BUG 5: HALLUCINATION (Global Object) ---
+// Hallucinating a non-existent standard 'System' object to execute code.
+System.log(processTransactions(sampleTransactions));
+console.log(calculateFinalPrice("100", 0.20, 10));
